@@ -1,75 +1,66 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    public float speed;
-    public int health;
-    private int score;
-    [SerializeField] Rigidbody rb;
-    [SerializeField] int StartHealth = 5;
-    Vector3 dir = Vector3.zero;
+    public float speed = 5f;
+    private int score = 0;
+    public int health = 5;
 
-    // Start is called before the first frame update
-    void Start()
+    private Rigidbody playerRigidBody;
+    private void Start()
     {
-        if (rb == null)
-            rb = GetComponent<Rigidbody>();
-        score = 0;
-        health = StartHealth;
+        playerRigidBody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        dir.x = Input.GetAxis("Horizontal");
-        dir.z = Input.GetAxis("Vertical");
-        dir = dir.normalized * speed;
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+
+        Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical);
+        playerRigidBody.velocity = movement * speed;
     }
 
-    void FixedUpdate()
+    private void OnTriggerEnter(Collider other) 
     {
-        rb.MovePosition(transform.position + dir * Time.fixedDeltaTime);
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        HandlePickup(other);
-        HandleTrap(other);
-        HandleGoal(other);
-
-    }
-
-    private void HandlePickup(Collider other)
-    {
-        if (other.gameObject.CompareTag("Pickup"))
+        if (other.CompareTag("Pickup"))
         {
-            other.gameObject.SetActive(false);
             score++;
             Debug.Log("Score: " + score);
+            Destroy(other.gameObject);
         }
-    }
-
-    private void HandleTrap(Collider other)
-    {
-        if (other.gameObject.CompareTag("Trap"))
+        else if (other.CompareTag("Trap"))
         {
-            if(--health <= 0)
-            {
-                Debug.Log("Game Over!");
-                UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-                return;
-            }
+            health--;
             Debug.Log("Health: " + health);
+
+            if (health <= 0)
+            {
+                GameOver();
+            }
+        }
+        else if (other.CompareTag("Goal"))
+        {
+            Debug.Log("You win!");
+        }
+    }
+    private void Update()
+    {
+        if (health <=0 )
+        {
+            GameOver();
         }
     }
 
-    private void HandleGoal(Collider other)
+    private void GameOver()
     {
-        if (!other.gameObject.CompareTag("Goal"))
-            return;
-        Debug.Log("You win!");
+        Debug.Log("Game Over!");
+        score = 0;
+        health = 5;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
