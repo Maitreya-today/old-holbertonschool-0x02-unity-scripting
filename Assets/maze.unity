@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 48dbd64ed8b26dc4289f886183afc2c2,
+    type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 56093bb3602e091478caf4b80b2bd60f,
     type: 2}
 --- !u!196 &4
@@ -5707,7 +5708,7 @@ GameObject:
   - component: {fileID: 1534254623}
   m_Layer: 0
   m_Name: Traps
-  m_TagString: Untagged
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
