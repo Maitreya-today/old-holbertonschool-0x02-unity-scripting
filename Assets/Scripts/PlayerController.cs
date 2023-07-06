@@ -1,60 +1,66 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private int score = 0;
-    public int health = 5;
-    public Rigidbody m_Rigidbody;
-    public float speed = 700;
+	public float speed;
+	private int score = 0;
+	public int health = 5;
 
-    // Start is called before the first frame update
-    void Start()
-    {}
+	// Start is called before the first frame update
+	void Start()
+	{
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (health == 0)
-        {
-            Debug.Log("Game Over!");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-    }
-    void FixedUpdate()
-    {
-        if (Input.GetKey("d"))
-            m_Rigidbody.AddForce(speed * Time.deltaTime, 0, 0);
-        if (Input.GetKey("a"))
-            m_Rigidbody.AddForce(-speed * Time.deltaTime, 0, 0);
-        if (Input.GetKey("w"))
-            m_Rigidbody.AddForce(0, 0, speed * Time.deltaTime);
-        if (Input.GetKey("s"))
-            m_Rigidbody.AddForce(0, 0, -speed * Time.deltaTime);
-    }
+	}
+	void Update()
+	{
+		if (health == 0)
+		{
+			Debug.Log("Game Over!");
+			SceneManager.LoadScene("maze");
+		}
+	}
+	// Update is called once per frame
+	void FixedUpdate()
+	{
+		if (Input.GetKey("up") || Input.GetKey("w"))
+		{
+			GetComponent<Rigidbody>().velocity = new Vector3(0, 0, speed);
+		}
+		if (Input.GetKey("right") || Input.GetKey("d"))
+		{
+			GetComponent<Rigidbody>().velocity = new Vector3(speed, 0, 0);
+		}
+		if (Input.GetKey("down") || Input.GetKey("s"))
+		{
+			GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -speed);
+		}
+		if (Input.GetKey("left") || Input.GetKey("a"))
+		{
+			GetComponent<Rigidbody>().velocity = new Vector3(-speed, 0, 0);
+		}
+	}
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Trap")
-        {
-            health -= 1;
-            Debug.Log("Health: " + health);
-        }
-        if (other.gameObject.tag == "Pickup")
-        {
-            score += 1;
-            Debug.Log("Score: " + score);
-            Destroy(other.gameObject);
-        }
-        if (other.gameObject.tag == "Goal")
-        {
-            Debug.Log("You win!");
-        }
-    }
+	void OnTriggerEnter(Collider other) 
+	{
+		if (other.tag == "Pickup")
+		{
+			score += 1;
+			Destroy(other.gameObject);
+			Debug.Log("Score: " + score);
+		}
+		if (other.tag == "Trap")
+		{
+			health -= 1;
+			Debug.Log("Health: " + health);
+		}
+		if (other.tag == "Goal")
+		{
+			Debug.Log("You win!");
+		}
+	}
 
-    void ZeroHealth(Collider other)
-    {
-    }
 }
